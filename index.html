@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AuraGen AI — Transform ideas into stunning AI images and videos. Text-to-image, text-to-video, prompt studio, and a full creative suite.">
+<title>AuraGen AI — Transform Ideas into Stunning AI Images & Videos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050608; --surface:#0d0f14; --surface2:#13161e; --surface3:#1a1e28;
+  --border:#1f2535; --border2:#2a3045;
+  --text:#e8eaf0; --muted:#6b7494; --muted2:#9099b8;
+  --accent:#7c5cfc; --accent2:#c15cfc; --pink:#fc5ca0; --teal:#5cf0c8; --gold:#fca65c; --green:#4ade80; --red:#f87171;
+  --grad:linear-gradient(135deg,var(--accent),var(--accent2));
+  --grad-text:linear-gradient(135deg,#fff 0%,var(--accent2) 55%,var(--pink) 100%);
+  --r:16px; --r2:12px; --r3:10px;
+  --glass:rgba(19,22,30,.6);
+  --shadow:0 24px 60px -24px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:rgba(124,92,252,.4)}
+
+/* backdrops */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora span{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;animation:float 18s ease-in-out infinite}
+.aurora .a1{width:560px;height:560px;top:-200px;left:8%;background:radial-gradient(circle,rgba(124,92,252,.5),transparent 60%)}
+.aurora .a2{width:520px;height:520px;top:-160px;right:4%;background:radial-gradient(circle,rgba(193,92,252,.4),transparent 60%);animation-delay:-6s}
+.aurora .a3{width:480px;height:480px;top:30%;left:38%;background:radial-gradient(circle,rgba(252,92,160,.28),transparent 60%);animation-delay:-11s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,30px) scale(1.06)}66%{transform:translate(-30px,20px) scale(.96)}}
+
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+/* nav */
+nav{position:sticky;top:0;z-index:90;backdrop-filter:blur(20px);background:rgba(5,6,8,.72);border-bottom:1px solid rgba(31,37,53,.6)}
+.nav-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 24px}
+.logo{display:flex;align-items:center;gap:11px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:21px;cursor:pointer}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:var(--grad);display:grid;place-items:center;font-size:17px;box-shadow:0 0 22px rgba(124,92,252,.5)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links a{padding:8px 15px;border-radius:9px;font-size:14px;font-weight:500;color:var(--muted2);cursor:pointer;transition:.18s}
+.nav-links a:hover{color:var(--text);background:var(--surface2)}
+.nav-links a.active{color:var(--text);background:var(--surface3)}
+.nav-cta{display:flex;gap:10px;align-items:center}
+.nav-toggle{display:none;background:none;border:1px solid var(--border2);border-radius:9px;color:var(--text);width:40px;height:40px;font-size:18px;cursor:pointer}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:11px 20px;border-radius:11px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:.18s;white-space:nowrap}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:var(--grad);border-color:transparent;box-shadow:0 8px 26px -8px rgba(124,92,252,.7)}
+.btn.primary:hover{box-shadow:0 12px 34px -8px rgba(124,92,252,.9)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:8px 14px;font-size:13px;border-radius:9px}
+.btn.lg{padding:15px 28px;font-size:16px;border-radius:13px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.danger{border-color:rgba(248,113,113,.4);color:var(--red)}
+.btn.danger:hover{background:rgba(248,113,113,.12);border-color:var(--red)}
+
+/* page system */
+.page{display:none;animation:fade .4s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.section{padding:84px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2);background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.25);padding:6px 13px;border-radius:100px;margin-bottom:20px}
+.sec-head{text-align:center;max-width:640px;margin:0 auto 52px}
+.sec-head h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,4.5vw,42px);font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.sec-head p{color:var(--muted2);font-size:17px;margin-top:14px}
+.gtext{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* hero */
+.hero{padding:72px 0 40px;text-align:center;position:relative}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,7vw,76px);font-weight:700;line-height:1.02;letter-spacing:-.03em;max-width:980px;margin:18px auto 0}
+.hero .lede{color:var(--muted2);font-size:clamp(16px,2.2vw,20px);max-width:600px;margin:22px auto 0;line-height:1.55}
+.hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+.hero-stats{display:flex;gap:38px;justify-content:center;flex-wrap:wrap;margin-top:46px}
+.hero-stat b{font-family:'Space Grotesk',sans-serif;font-size:26px;display:block;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat span{color:var(--muted);font-size:13px}
+.marquee{margin-top:54px;-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);overflow:hidden}
+.marquee-track{display:flex;gap:16px;width:max-content;animation:scroll 36s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.mq-img{width:200px;height:140px;border-radius:14px;background-size:cover;background-position:center;border:1px solid var(--border);flex:0 0 auto}
+
+/* cards / glass */
+.glass{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);backdrop-filter:blur(14px)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feat{padding:26px;border-radius:var(--r);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--border);transition:.22s}
+.feat:hover{border-color:var(--border2);transform:translateY(-3px)}
+.feat-ic{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:22px;margin-bottom:16px;background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25)}
+.feat h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px}
+.feat p{color:var(--muted2);font-size:14px;line-height:1.55}
+
+/* pricing */
+.price-toggle{display:inline-flex;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:5px;margin:0 auto 40px;gap:4px}
+.price-toggle button{border:none;background:none;color:var(--muted2);font-weight:600;font-size:14px;padding:9px 22px;border-radius:100px;cursor:pointer;transition:.18s;font-family:inherit}
+.price-toggle button.active{background:var(--grad);color:#fff}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plan{padding:30px;border-radius:var(--r);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--border);display:flex;flex-direction:column}
+.plan.pop{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 24px 60px -28px rgba(124,92,252,.6);position:relative}
+.plan-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--grad);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:100px}
+.plan h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600}
+.plan .price{font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;margin:14px 0 2px}
+.plan .price small{font-size:15px;color:var(--muted);font-weight:500}
+.plan .sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+.plan ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:26px;flex:1}
+.plan li{display:flex;gap:10px;font-size:14px;color:var(--muted2)}
+.plan li b{color:var(--text);font-weight:600}
+.plan li .ck{color:var(--teal);flex:0 0 auto}
+
+/* testimonials */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tcard{padding:24px;border-radius:var(--r);background:var(--surface2);border:1px solid var(--border)}
+.tcard p{font-size:14.5px;line-height:1.6;color:var(--text)}
+.tperson{display:flex;align-items:center;gap:12px;margin-top:18px}
+.tav{width:42px;height:42px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:700;font-family:'Space Grotesk',sans-serif}
+.tperson b{font-size:14px;display:block}
+.tperson span{font-size:12px;color:var(--muted)}
+.stars{color:var(--gold);font-size:13px;margin-bottom:12px;letter-spacing:2px}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto}
+.faq-item{border:1px solid var(--border);border-radius:var(--r2);background:var(--surface2);margin-bottom:12px;overflow:hidden}
+.faq-q{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;font-size:15px;gap:16px}
+.faq-q .pl{color:var(--accent2);transition:.25s;font-size:20px;flex:0 0 auto}
+.faq-item.open .faq-q .pl{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--muted2);font-size:14px;line-height:1.6}
+.faq-a div{padding:0 22px 20px}
+
+/* footer */
+footer{border-top:1px solid var(--border);padding:60px 0 30px;margin-top:40px;position:relative;z-index:2}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:30px}
+.foot-col h4{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px}
+.foot-col a{display:block;color:var(--muted2);font-size:14px;margin-bottom:10px;cursor:pointer}
+.foot-col a:hover{color:var(--text)}
+.foot-brand p{color:var(--muted2);font-size:14px;line-height:1.6;margin:14px 0 18px;max-width:280px}
+.socials{display:flex;gap:10px}
+.soc{width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;transition:.18s}
+.soc:hover{border-color:var(--accent);background:var(--surface3);transform:translateY(-2px)}
+.soc svg{width:17px;height:17px;fill:var(--muted2)}
+.soc:hover svg{fill:var(--text)}
+.foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:44px;padding-top:24px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+
+/* app shell (studio pages) */
+.studio{padding:34px 0 80px}
+.studio-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:26px}
+.studio-head h1{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.02em}
+.studio-head p{color:var(--muted);font-size:14px;margin-top:4px}
+.split{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+.panel{padding:22px;border-radius:var(--r)}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:9px;color:var(--muted2)}
+textarea,input[type=text],input[type=email],input[type=password],select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:14px;padding:12px 14px;transition:.18s;resize:vertical}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,252,.15)}
+textarea::placeholder,input::placeholder{color:var(--muted)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239099b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted2);font-size:13px;font-weight:500;cursor:pointer;transition:.16s}
+.chip:hover{border-color:var(--border2);color:var(--text)}
+.chip.active{background:rgba(124,92,252,.16);border-color:var(--accent);color:#fff}
+.ratio-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ratio{border:1px solid var(--border);background:var(--surface);border-radius:var(--r3);padding:10px 6px;text-align:center;cursor:pointer;transition:.16s}
+.ratio:hover{border-color:var(--border2)}
+.ratio.active{border-color:var(--accent);background:rgba(124,92,252,.14)}
+.ratio .box{margin:0 auto 7px;border:1.5px solid var(--muted2);border-radius:3px}
+.ratio.active .box{border-color:var(--accent2)}
+.ratio span{font-size:11px;color:var(--muted2)}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface)}
+.switch small{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+.tog{width:44px;height:25px;border-radius:100px;background:var(--surface3);border:1px solid var(--border2);position:relative;cursor:pointer;flex:0 0 auto;transition:.2s}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:var(--muted2);transition:.2s}
+.tog.on{background:var(--grad);border-color:transparent}
+.tog.on::after{left:21px;background:#fff}
+.stepper{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;width:fit-content}
+.stepper button{width:38px;height:38px;background:var(--surface);border:none;color:var(--text);font-size:18px;cursor:pointer}
+.stepper button:hover{background:var(--surface3)}
+.stepper span{width:44px;text-align:center;font-weight:600;font-size:15px}
+
+/* result grids */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.toolbar .count{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.img-card{border-radius:var(--r2);overflow:hidden;background:var(--surface2);border:1px solid var(--border);position:relative;transition:.2s}
+.img-card:hover{border-color:var(--border2);transform:translateY(-3px)}
+.img-card img{width:100%;aspect-ratio:1;object-fit:cover;cursor:pointer;background:var(--surface3)}
+.img-card-info{padding:12px}
+.img-card-prompt{font-size:12px;color:var(--muted2);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:9px}
+.img-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.img-card-style{font-size:11px;color:var(--accent2);background:rgba(124,92,252,.12);padding:3px 9px;border-radius:100px}
+.img-card-btns{display:flex;gap:6px}
+.icon-btn{width:30px;height:30px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted2);cursor:pointer;font-size:13px;display:grid;place-items:center;transition:.16s}
+.icon-btn:hover{color:var(--text);border-color:var(--accent)}
+.icon-btn.fav.on{color:var(--pink);border-color:var(--pink)}
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--muted)}
+.empty .big{font-size:46px;margin-bottom:14px}
+.empty h3{color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:19px;margin-bottom:6px}
+.skeleton{border-radius:var(--r2);overflow:hidden;background:var(--surface2);border:1px solid var(--border)}
+.skel-img{aspect-ratio:1;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200%;animation:shim 1.4s infinite}
+.skel-l{height:10px;margin:12px;border-radius:6px;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200%;animation:shim 1.4s infinite}
+.skel-l.s{width:60%}
+@keyframes shim{to{background-position:-200%}}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* dashboard */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:26px}
+.stat{padding:22px;border-radius:var(--r);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--border)}
+.stat .lab{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:8px}
+.stat .val{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;margin-top:10px}
+.stat .delta{font-size:12px;margin-top:6px}
+.delta.up{color:var(--green)}.delta.down{color:var(--red)}
+.dash-cols{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.card{padding:22px;border-radius:var(--r);background:var(--surface2);border:1px solid var(--border)}
+.card h3{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
+.bars{display:flex;align-items:flex-end;gap:10px;height:160px;padding-top:10px}
+.bar{flex:1;border-radius:7px 7px 0 0;background:var(--grad);min-height:6px;transition:height .6s cubic-bezier(.2,.8,.2,1);position:relative}
+.bar::after{content:attr(data-d);position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
+.credit-ring{width:150px;height:150px;margin:0 auto}
+.list-row{display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:1px solid var(--border)}
+.list-row:last-child{border-bottom:none}
+.list-thumb{width:46px;height:46px;border-radius:10px;background:var(--grad);flex:0 0 auto;background-size:cover}
+.list-row .meta{flex:1;min-width:0}
+.list-row .meta b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-row .meta span{font-size:12px;color:var(--muted)}
+.tag{font-size:11px;padding:4px 10px;border-radius:100px;font-weight:600}
+.tag.green{background:rgba(74,222,128,.12);color:var(--green)}
+.tag.purple{background:rgba(124,92,252,.14);color:var(--accent2)}
+.tag.gold{background:rgba(252,166,92,.14);color:var(--gold)}
+.tag.red{background:rgba(248,113,113,.12);color:var(--red)}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;padding:12px 14px;border-bottom:1px solid var(--border)}
+.tbl td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:14px}
+.tbl tr:hover td{background:var(--surface)}
+.uav{display:flex;align-items:center;gap:11px}
+.uav .av{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:13px;font-weight:700;flex:0 0 auto}
+
+/* admin nav */
+.subnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:26px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:6px}
+.subnav button{border:none;background:none;color:var(--muted2);font-family:inherit;font-weight:500;font-size:13.5px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:.16s}
+.subnav button:hover{color:var(--text);background:var(--surface3)}
+.subnav button.active{background:var(--grad);color:#fff}
+
+/* modals */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(3,4,6,.78);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;animation:fade .25s}
+.overlay.show{display:flex}
+.modal{width:100%;max-width:440px;border-radius:20px;background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--border2);padding:30px;position:relative;box-shadow:var(--shadow);max-height:92vh;overflow:auto}
+.modal.lg{max-width:560px}
+.modal-x{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--muted2);cursor:pointer;font-size:16px}
+.modal-x:hover{color:var(--text)}
+.modal h2{font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;text-align:center}
+.modal .msub{text-align:center;color:var(--muted);font-size:14px;margin-top:7px;margin-bottom:24px}
+.auth-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:4px;margin-bottom:22px}
+.auth-tabs button{flex:1;border:none;background:none;color:var(--muted2);font-family:inherit;font-weight:600;font-size:14px;padding:9px;border-radius:8px;cursor:pointer;transition:.16s}
+.auth-tabs button.active{background:var(--grad);color:#fff}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:11px;background:#fff;color:#1a1a1a;font-weight:600;font-size:14px;border:none;cursor:pointer;transition:.16s}
+.gbtn:hover{background:#f1f1f1}
+.divide{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:12px;margin:18px 0}
+.divide::before,.divide::after{content:'';flex:1;height:1px;background:var(--border)}
+.link{color:var(--accent2);cursor:pointer;font-size:13px}
+.link:hover{text-decoration:underline}
+
+/* lightbox */
+.lbx{position:fixed;inset:0;z-index:210;background:rgba(3,4,6,.92);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:24px;flex-direction:column;gap:18px}
+.lbx.show{display:flex}
+.lbx img{max-width:min(720px,92vw);max-height:68vh;border-radius:14px;border:1px solid var(--border2)}
+.lbx-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.lbx-prompt{color:var(--muted2);font-size:13px;max-width:640px;text-align:center;line-height:1.5}
+
+/* chatbot */
+.chat-fab{position:fixed;bottom:26px;right:26px;z-index:120;width:58px;height:58px;border-radius:18px;background:var(--grad);border:none;cursor:pointer;box-shadow:0 14px 34px -8px rgba(124,92,252,.7);font-size:24px;display:grid;place-items:center;transition:.2s}
+.chat-fab:hover{transform:scale(1.06)}
+.chat-win{position:fixed;bottom:96px;right:26px;z-index:120;width:360px;max-width:calc(100vw - 36px);height:480px;max-height:70vh;border-radius:20px;background:linear-gradient(170deg,var(--surface2),var(--surface));border:1px solid var(--border2);box-shadow:var(--shadow);display:none;flex-direction:column;overflow:hidden}
+.chat-win.show{display:flex;animation:fade .25s}
+.chat-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
+.chat-head .av{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;font-size:17px}
+.chat-head b{font-size:15px;font-family:'Space Grotesk',sans-serif}
+.chat-head span{font-size:12px;color:var(--teal);display:flex;align-items:center;gap:5px}
+.chat-head span::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:80%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.5}
+.msg.bot{background:var(--surface3);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:var(--grad);align-self:flex-end;border-bottom-right-radius:4px}
+.chat-foot{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-foot input{flex:1}
+.chat-suggest{display:flex;gap:7px;flex-wrap:wrap;padding:0 16px 12px}
+.chat-suggest button{font-size:12px;padding:6px 11px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted2);cursor:pointer}
+.chat-suggest button:hover{border-color:var(--accent);color:var(--text)}
+
+/* toasts */
+.toasts{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:10px;align-items:center}
+.toast{background:var(--surface3);border:1px solid var(--border2);border-radius:12px;padding:13px 18px;font-size:14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);animation:up .3s}
+.toast.success{border-color:rgba(74,222,128,.4)}
+.toast.error{border-color:rgba(248,113,113,.4)}
+.toast .dotc{width:8px;height:8px;border-radius:50%}
+.toast.success .dotc{background:var(--green)}
+.toast.error .dotc{background:var(--red)}
+.toast.info .dotc{background:var(--accent2)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* tools hub */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tool{padding:24px;border-radius:var(--r);background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--border);cursor:pointer;transition:.2s}
+.tool:hover{border-color:var(--accent);transform:translateY(-3px)}
+.tool-ic{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-size:24px;margin-bottom:15px}
+.tool h3{font-family:'Space Grotesk',sans-serif;font-size:17px;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+.tool p{color:var(--muted2);font-size:13.5px;line-height:1.5}
+.badge{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:100px;background:rgba(124,92,252,.16);color:var(--accent2)}
+
+/* video */
+.vid-card{border-radius:var(--r2);overflow:hidden;background:var(--surface2);border:1px solid var(--border);position:relative}
+.vid-frame{aspect-ratio:16/9;position:relative;overflow:hidden;background:var(--surface3)}
+.vid-frame img{width:100%;height:100%;object-fit:cover;animation:kenburns 12s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1) translate(0,0)}to{transform:scale(1.18) translate(-3%,2%)}}
+.vid-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.25)}
+.vid-play .pl{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;color:#000;font-size:20px;padding-left:4px}
+.vid-tl{height:4px;background:var(--surface);position:relative;overflow:hidden}
+.vid-tl::after{content:'';position:absolute;inset:0;width:30%;background:var(--grad);animation:tl 4s linear infinite}
+@keyframes tl{from{left:-30%}to{left:100%}}
+
+/* misc */
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.muted{color:var(--muted)}
+.mt{margin-top:18px}.mb{margin-bottom:18px}
+.refbox{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px dashed var(--border2);border-radius:var(--r2);padding:12px 14px;font-size:13px;color:var(--muted2);word-break:break-all}
+.progress{height:8px;border-radius:100px;background:var(--surface3);overflow:hidden}
+.progress i{display:block;height:100%;border-radius:100px;background:var(--grad)}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.01ms!important}}
+
+/* responsive */
+@media(max-width:980px){
+  .feat-grid,.price-grid,.tg,.tools-grid{grid-template-columns:1fr 1fr}
+  .dash-grid{grid-template-columns:1fr 1fr}
+  .dash-cols,.split{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:680px){
+  .nav-links{display:none;position:absolute;top:60px;left:0;right:0;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--border);padding:10px}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:12px 15px}
+  .nav-toggle{display:grid;place-items:center}
+  .feat-grid,.price-grid,.tg,.tools-grid,.dash-grid,.foot-grid{grid-template-columns:1fr}
+  .section{padding:60px 0}
+  .nav-cta .btn:not(.primary){display:none}
+}
+</style>
+</head>
+<body>
+<div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-in">
+    <div class="logo" onclick="go('landing')"><div class="logo-icon">✦</div>AuraGen<span style="font-size:11px;color:var(--accent2);font-family:Inter;font-weight:700;letter-spacing:.08em;background:rgba(124,92,252,.14);padding:2px 7px;border-radius:6px">AI</span></div>
+    <div class="nav-links" id="navLinks">
+      <a data-nav="landing" class="active" onclick="go('landing')">Home</a>
+      <a data-nav="image" onclick="go('image')">Image</a>
+      <a data-nav="video" onclick="go('video')">Video</a>
+      <a data-nav="prompt" onclick="go('prompt')">Prompt Studio</a>
+      <a data-nav="tools" onclick="go('tools')">Tools</a>
+      <a data-nav="dashboard" onclick="go('dashboard')">Dashboard</a>
+      <a data-nav="admin" onclick="go('admin')">Admin</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn ghost sm" onclick="openAuth('login')">Log in</button>
+      <button class="btn primary sm" onclick="openAuth('register')">Get started</button>
+      <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ LANDING ============ -->
+<div class="page active" id="page-landing">
+  <header class="hero wrap">
+    <span class="eyebrow">✨ Powered by next-gen diffusion & video models</span>
+    <h1>Transform Ideas into <span class="gtext">Stunning AI Images &amp; Videos</span></h1>
+    <p class="lede">One studio for everything visual. Generate, animate, upscale and ship — from a single prompt to a finished campaign in seconds.</p>
+    <div class="hero-cta">
+      <button class="btn primary lg" onclick="go('image')">Start creating free →</button>
+      <button class="btn lg" onclick="go('video')">▶ Watch video demo</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><b>12M+</b><span>Images generated</span></div>
+      <div class="hero-stat"><b>180K</b><span>Active creators</span></div>
+      <div class="hero-stat"><b>40+</b><span>AI models</span></div>
+      <div class="hero-stat"><b>4.9/5</b><span>Avg. rating</span></div>
+    </div>
+    <div class="marquee"><div class="marquee-track" id="mqTrack"></div></div>
+  </header>
+
+  <!-- DEMOS -->
+  <section class="section wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Live demos</span>
+      <h2>See it work in real time</h2>
+      <p>Type a prompt and watch AuraGen render. The image engine is fully live — no sign-up required.</p>
+    </div>
+    <div class="split">
+      <div class="panel glass">
+        <div class="field"><label>🖼 Image prompt</label>
+          <textarea id="demoPrompt" rows="3">A neon-lit cyberpunk street in the rain, cinematic, ultra detailed, 8k</textarea>
+        </div>
+        <div class="field"><label>Style</label>
+          <div class="seg" id="demoStyles"></div>
+        </div>
+        <button class="btn primary block" id="demoGen" onclick="demoGenerate()">Generate image</button>
+        <p class="muted" style="font-size:12px;margin-top:12px;text-align:center">Tip: open the full <a class="link" onclick="go('image')">Image Studio</a> for batch, ratios &amp; history.</p>
+      </div>
+      <div class="panel glass" style="min-height:320px;display:grid;place-items:center" id="demoStage">
+        <div class="empty" style="padding:40px"><div class="big">🎨</div><h3>Your preview appears here</h3><p>Hit generate to see the engine in action.</p></div>
+      </div>
+    </div>
+    <div class="split" style="margin-top:22px">
+      <div class="panel glass">
+        <div class="field"><label>🎬 Video prompt</label>
+          <textarea id="demoVidPrompt" rows="3">A timelapse of clouds over snowy mountains at sunrise, drone shot, cinematic</textarea>
+        </div>
+        <div class="field"><label>Motion</label><div class="seg" id="demoMotion"></div></div>
+        <button class="btn primary block" onclick="go('video')">Open Video Studio →</button>
+      </div>
+      <div class="panel glass" style="padding:0;overflow:hidden">
+        <div class="vid-frame"><img src="https://image.pollinations.ai/prompt/cinematic%20snowy%20mountains%20sunrise%20clouds%20drone?width=640&height=360&nologo=true&seed=7" alt="video demo" onerror="gradFallback(this)"><div class="vid-play"><div class="pl">▶</div></div></div>
+        <div class="vid-tl"></div>
+        <div style="padding:14px;display:flex;justify-content:space-between;align-items:center"><span class="muted" style="font-size:13px">Preview · 1080p · 4s</span><span class="tag purple">Text-to-Video</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section wrap">
+    <div class="sec-head"><span class="eyebrow">Everything you need</span><h2>A complete creative suite</h2><p>From first spark to final export — no tab-switching, no stitched-together tools.</p></div>
+    <div class="feat-grid" id="featGrid"></div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section wrap" id="pricing">
+    <div class="sec-head"><span class="eyebrow">Pricing</span><h2>Plans that scale with you</h2><p>Start free. Upgrade when you're ready. Cancel anytime.</p></div>
+    <div style="text-align:center"><div class="price-toggle"><button class="active" onclick="setBilling('mo',this)">Monthly</button><button onclick="setBilling('yr',this)">Yearly · save 20%</button></div></div>
+    <div class="price-grid" id="priceGrid"></div>
+    <p class="muted" style="text-align:center;margin-top:24px;font-size:13px">Pay with 💳 Stripe or Razorpay · GST invoices · Credits never expire on paid plans</p>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section wrap">
+    <div class="sec-head"><span class="eyebrow">Loved by creators</span><h2>Join 180,000+ makers</h2></div>
+    <div class="tg" id="testiGrid"></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section wrap">
+    <div class="sec-head"><span class="eyebrow">FAQ</span><h2>Questions, answered</h2></div>
+    <div class="faq" id="faqList"></div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap" style="padding:20px 0 70px">
+    <div class="glass" style="text-align:center;padding:56px 30px;background:linear-gradient(135deg,rgba(124,92,252,.14),rgba(252,92,160,.08))">
+      <h2 style="font-family:'Space Grotesk';font-size:clamp(26px,4vw,38px);font-weight:700">Ready to create something <span class="gtext">extraordinary</span>?</h2>
+      <p class="muted" style="font-size:17px;margin:14px auto 28px;max-width:480px">Get 50 free credits when you sign up today. No card required.</p>
+      <button class="btn primary lg" onclick="openAuth('register')">Create free account</button>
+    </div>
+  </section>
+</div>
+
+<!-- ============ IMAGE STUDIO ============ -->
+<div class="page" id="page-image">
+  <div class="studio wrap">
+    <div class="studio-head">
+      <div><h1>🖼 Image Studio</h1><p>Text-to-image with model, style, ratio &amp; negative-prompt control.</p></div>
+      <div class="row"><span class="tag gold" id="creditTag">⚡ 50 credits</span><button class="btn sm" onclick="go('dashboard')">My account</button></div>
+    </div>
+    <div class="split">
+      <div class="panel glass">
+        <div class="field"><label>Prompt</label>
+          <textarea id="imgPrompt" rows="4" placeholder="A serene Japanese garden at golden hour, cherry blossoms falling, koi pond, ultra-detailed, cinematic lighting…"></textarea>
+        </div>
+        <div class="field">
+          <button class="btn sm block" onclick="enhanceField('imgPrompt')">✨ Enhance prompt with AI</button>
+        </div>
+        <div class="field"><label>AI Model</label>
+          <select id="imgModel">
+            <option value="flux">Aura-Flux · photoreal flagship</option>
+            <option value="flux-realism">Aura-Realism · ultra-photographic</option>
+            <option value="flux-anime">Aura-Anime · illustration</option>
+            <option value="flux-3d">Aura-3D · render</option>
+            <option value="turbo">Aura-Turbo · fast draft</option>
+          </select>
+        </div>
+        <div class="field"><label>Style</label><div class="seg" id="imgStyles"></div></div>
+        <div class="field"><label>Aspect ratio</label>
+          <div class="ratio-grid" id="ratioGrid"></div>
+        </div>
+        <div class="field"><label>Images</label>
+          <div class="between">
+            <div class="stepper"><button onclick="stepCount(-1)">−</button><span id="countVal">2</span><button onclick="stepCount(1)">+</button></div>
+            <label class="switch" style="flex:1;margin-left:12px"><div><b style="font-size:13px;color:var(--text)">Hi-Res</b><small>2x upscale export</small></div><div class="tog" id="hires" onclick="this.classList.toggle('on')"></div></label>
+          </div>
+        </div>
+        <div class="field"><label>Negative prompt</label>
+          <input type="text" id="imgNeg" placeholder="blurry, low quality, distorted, watermark, text…">
+        </div>
+        <button class="btn primary block lg" id="imgGenBtn" onclick="generateImages()">Generate <span id="imgGenCount">2 images · 4⚡</span></button>
+      </div>
+      <div>
+        <div class="toolbar">
+          <span class="count" id="imgCount">0 images</span>
+          <div class="row"><button class="btn sm" onclick="downloadAllImages()">⬇ Download all</button><button class="btn sm danger" onclick="clearImages()">Clear</button></div>
+        </div>
+        <div class="grid" id="imgGrid"><div class="empty"><div class="big">🎨</div><h3>Your canvas is empty</h3><p>Write a prompt and click Generate.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VIDEO STUDIO ============ -->
+<div class="page" id="page-video">
+  <div class="studio wrap">
+    <div class="studio-head"><div><h1>🎬 Video Studio</h1><p>Text-to-video &amp; image-to-video with motion and duration control.</p></div><span class="tag gold">⚡ 50 credits</span></div>
+    <div class="split">
+      <div class="panel glass">
+        <div class="field"><label>Mode</label><div class="seg" id="vidMode"></div></div>
+        <div class="field" id="vidImgField" style="display:none"><label>Source image</label>
+          <div class="refbox" style="justify-content:center;cursor:pointer" onclick="toast('Upload opens your file picker in the full app','info')">📁 Click to upload an image</div>
+        </div>
+        <div class="field"><label>Prompt</label>
+          <textarea id="vidPrompt" rows="4" placeholder="A time-lapse of a flower blooming, golden sunlight, cinematic 4K, slow motion…"></textarea>
+        </div>
+        <div class="field"><label>Motion intensity</label><div class="seg" id="vidMotion"></div></div>
+        <div class="field"><label>Duration</label><div class="seg" id="vidDur"></div></div>
+        <div class="field"><label>Quality</label>
+          <select id="vidQuality"><option>720p · HD</option><option selected>1080p · Full HD</option><option>1440p · 2K (Pro)</option><option>2160p · 4K (Premium)</option></select>
+        </div>
+        <button class="btn primary block lg" id="vidGenBtn" onclick="generateVideo()">Generate video · 12⚡</button>
+      </div>
+      <div>
+        <div class="toolbar"><span class="count" id="vidCount">0 videos</span></div>
+        <div class="grid" id="vidGrid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))"><div class="empty"><div class="big">🎬</div><h3>No videos yet</h3><p>Describe a scene and generate your first clip.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROMPT STUDIO ============ -->
+<div class="page" id="page-prompt">
+  <div class="studio wrap">
+    <div class="studio-head"><div><h1>✍️ Prompt Studio</h1><p>Enhance, template and save prompts that actually work.</p></div></div>
+    <div class="split">
+      <div class="panel glass">
+        <div class="field"><label>Your idea</label>
+          <textarea id="pIdea" rows="4" placeholder="a fox in a forest">a lone astronaut watching two moons rise</textarea>
+        </div>
+        <div class="field"><label>Enhance for</label><div class="seg" id="pTargets"></div></div>
+        <button class="btn primary block" onclick="enhancePrompt()">✨ Enhance prompt</button>
+        <div class="field mt"><label>Templates</label><div class="seg" id="pTemplates"></div></div>
+      </div>
+      <div>
+        <div class="card mb">
+          <h3>Enhanced result <button class="btn sm" onclick="copyPrompt()">📋 Copy</button></h3>
+          <div id="pResult" class="refbox" style="min-height:90px;color:var(--text);font-size:14px;line-height:1.6;border-style:solid">Your enhanced prompt will appear here…</div>
+          <div class="row mt"><button class="btn sm" onclick="savePromptCurrent()">💾 Save</button><button class="btn sm" onclick="usePromptInImage()">→ Use in Image Studio</button></div>
+        </div>
+        <div class="card">
+          <h3>🔥 Trending prompts</h3>
+          <div id="trendList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOOLS HUB ============ -->
+<div class="page" id="page-tools">
+  <div class="studio wrap">
+    <div class="studio-head"><div><h1>🧰 Creative Tools</h1><p>A full kit of one-click AI utilities beyond generation.</p></div></div>
+    <div class="tools-grid" id="toolsGrid"></div>
+  </div>
+</div>
+
+<!-- ============ USER DASHBOARD ============ -->
+<div class="page" id="page-dashboard">
+  <div class="studio wrap">
+    <div class="studio-head"><div><h1>👋 Welcome back, Ranjith</h1><p>Here's what's happening with your account.</p></div><button class="btn primary sm" onclick="go('image')">+ New generation</button></div>
+    <div class="subnav" id="dashNav">
+      <button class="active" onclick="dashTab('overview',this)">Overview</button>
+      <button onclick="dashTab('projects',this)">Recent projects</button>
+      <button onclick="dashTab('saved',this)">Saved prompts</button>
+      <button onclick="dashTab('favorites',this)">Favorites</button>
+      <button onclick="dashTab('affiliate',this)">Affiliate</button>
+      <button onclick="dashTab('profile',this)">Profile</button>
+      <button onclick="dashTab('billing',this)">Billing</button>
+    </div>
+    <div id="dashBody"></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN DASHBOARD ============ -->
+<div class="page" id="page-admin">
+  <div class="studio wrap">
+    <div class="studio-head"><div><h1>🛡 Admin Console</h1><p>Manage users, revenue, models and moderation.</p></div><span class="tag green">● System healthy</span></div>
+    <div class="subnav" id="adminNav">
+      <button class="active" onclick="adminTab('overview',this)">Analytics</button>
+      <button onclick="adminTab('users',this)">Users</button>
+      <button onclick="adminTab('subs',this)">Subscriptions</button>
+      <button onclick="adminTab('models',this)">AI Models</button>
+      <button onclick="adminTab('moderation',this)">Moderation</button>
+      <button onclick="adminTab('tickets',this)">Support</button>
+      <button onclick="adminTab('coupons',this)">Coupons</button>
+      <button onclick="adminTab('settings',this)">Settings</button>
+    </div>
+    <div id="adminBody"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="wrap">
+  <div class="foot-grid">
+    <div class="foot-col foot-brand">
+      <div class="logo"><div class="logo-icon">✦</div>AuraGen<span style="font-size:11px;color:var(--accent2);font-weight:700;padding:2px 7px;background:rgba(124,92,252,.14);border-radius:6px">AI</span></div>
+      <p>The all-in-one AI studio for stunning images and videos. Create, animate and ship — faster than ever.</p>
+      <div class="socials">
+        <a class="soc" title="X" onclick="toast('Follow @AuraGenAI','info')"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a class="soc" title="Instagram" onclick="toast('Follow @auragen.ai','info')"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.4-10.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
+        <a class="soc" title="YouTube" onclick="toast('Subscribe on YouTube','info')"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.6V8.4l6.3 3.6z"/></svg></a>
+        <a class="soc" title="TikTok" onclick="toast('Follow @auragen','info')"><svg viewBox="0 0 24 24"><path d="M19.6 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.3 0 .59.05.86.13V9.4a6.33 6.33 0 00-1-.05A6.34 6.34 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.03-.1z"/></svg></a>
+        <a class="soc" title="LinkedIn" onclick="toast('Follow AuraGen AI','info')"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46zM5.34 7.43a2.07 2.07 0 110-4.14 2.07 2.07 0 010 4.14zM7.12 20.45H3.55V9h3.57zM22.22 0H1.77C.8 0 0 .78 0 1.74v20.52C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.74V1.74C24 .78 23.2 0 22.22 0z"/></svg></a>
+      </div>
+    </div>
+    <div class="foot-col"><h4>Product</h4><a onclick="go('image')">Image Studio</a><a onclick="go('video')">Video Studio</a><a onclick="go('prompt')">Prompt Studio</a><a onclick="go('tools')">Tools</a><a onclick="go('landing');document.getElementById('pricing').scrollIntoView()">Pricing</a></div>
+    <div class="foot-col"><h4>Company</h4><a onclick="toast('About AuraGen','info')">About</a><a onclick="toast('We are hiring!','info')">Careers</a><a onclick="toast('Read the blog','info')">Blog</a><a onclick="openChat()">Contact</a></div>
+    <div class="foot-col"><h4>Developers</h4><a onclick="toast('API keys live in your dashboard','info')">API access</a><a onclick="toast('Docs opening…','info')">Documentation</a><a onclick="go('dashboard');dashTab('affiliate',document.querySelector('#dashNav button:nth-child(5)'))">Affiliate program</a><a onclick="toast('Status: all systems operational','success')">Status</a></div>
+  </div>
+  <div class="foot-bottom"><span>© 2026 AuraGen AI. All rights reserved.</span><span class="row"><a class="muted" onclick="toast('Privacy policy','info')">Privacy</a><a class="muted" onclick="toast('Terms of service','info')">Terms</a><span>🌐 English ▾</span></span></div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-x" onclick="closeOverlay('authOverlay')">✕</button>
+    <h2 id="authTitle">Welcome back</h2>
+    <p class="msub" id="authSub">Log in to continue creating</p>
+    <div class="auth-tabs" id="authTabs"><button class="active" onclick="authMode('login',this)">Log in</button><button onclick="authMode('register',this)">Sign up</button></div>
+    <button class="gbtn" onclick="mockAuth('Google')"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 110-24c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 1024 44c11 0 20-9 20-20 0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A12 12 0 0124 12c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 006.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0124 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 01-4.1 5.6l6.2 5.2c-.4.4 6.6-4.8 6.6-14.8 0-1.3-.1-2.3-.4-3.5z"/></svg>Continue with Google</button>
+    <div class="divide">or with email</div>
+    <div class="field" id="nameField" style="display:none"><label>Full name</label><input type="text" id="auName" placeholder="Ranjith Kumar"></div>
+    <div class="field"><label>Email</label><input type="email" id="auEmail" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input type="password" id="auPass" placeholder="••••••••"></div>
+    <div class="between mb" id="loginExtra"><label class="row" style="font-size:13px;color:var(--muted2);align-items:center;gap:7px"><input type="checkbox" style="width:auto"> Remember me</label><span class="link" onclick="authMode('forgot')">Forgot password?</span></div>
+    <button class="btn primary block lg" id="authSubmit" onclick="mockAuth('email')">Log in</button>
+    <p class="muted" style="text-align:center;font-size:12px;margin-top:16px">By continuing you agree to our Terms &amp; Privacy Policy.</p>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="overlay" id="payOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-x" onclick="closeOverlay('payOverlay')">✕</button>
+    <h2>Complete your upgrade</h2>
+    <p class="msub" id="payPlanName">Pro plan</p>
+    <div class="card mb" style="background:var(--surface);display:flex;justify-content:space-between;align-items:center"><span>Total due today</span><b style="font-family:'Space Grotesk';font-size:24px" id="payAmount">$19</b></div>
+    <div class="field"><label>Payment method</label>
+      <div class="seg"><button class="chip active" onclick="selChip(this)">💳 Card (Stripe)</button><button class="chip" onclick="selChip(this)">🇮🇳 UPI / Razorpay</button></div>
+    </div>
+    <div class="field"><label>Card number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
+    <div class="row"><div class="field" style="flex:1"><label>Expiry</label><input type="text" placeholder="12 / 28"></div><div class="field" style="flex:1"><label>CVC</label><input type="text" placeholder="123"></div></div>
+    <div class="field"><label>Coupon code</label><div class="row"><input type="text" id="couponIn" placeholder="AURA20" style="flex:1"><button class="btn" onclick="applyCoupon()">Apply</button></div></div>
+    <button class="btn primary block lg" onclick="mockPay()">🔒 Pay securely</button>
+    <p class="muted" style="text-align:center;font-size:12px;margin-top:14px">Demo checkout — no real charge. PCI-compliant via Stripe & Razorpay in production.</p>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lbx" id="lbx">
+  <img id="lbxImg" src="" alt="">
+  <div class="lbx-prompt" id="lbxPrompt"></div>
+  <div class="lbx-bar">
+    <button class="btn" onclick="closeLbx()">Close</button>
+    <button class="btn" id="lbxFav" onclick="favFromLbx()">♡ Favorite</button>
+    <button class="btn" onclick="reuseLbx()">↻ Reuse prompt</button>
+    <button class="btn primary" id="lbxDl" onclick="downloadFromLbx()">⬇ Download</button>
+  </div>
+</div>
+
+<!-- CHATBOT -->
+<button class="chat-fab" onclick="toggleChat()" aria-label="Open assistant">💬</button>
+<div class="chat-win" id="chatWin">
+  <div class="chat-head"><div class="av">✦</div><div><b>Aura Assistant</b><span>Online</span></div><button class="modal-x" style="position:static;margin-left:auto" onclick="toggleChat()">✕</button></div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-suggest" id="chatSuggest"></div>
+  <div class="chat-foot"><input type="text" id="chatIn" placeholder="Ask me anything…" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn primary sm" onclick="sendChat()">➤</button></div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ============================================================
+   AuraGen AI — front-end application logic (no external deps)
+   ============================================================ */
+
+/* ---------- storage shim (works in sandbox + persists locally) ---------- */
+var mem = {};
+function store(k,v){ mem[k]=v; try{ localStorage.setItem('aura_'+k, JSON.stringify(v)); }catch(e){} }
+function load(k,def){ if(k in mem) return mem[k]; try{ var r=localStorage.getItem('aura_'+k); if(r){ mem[k]=JSON.parse(r); return mem[k]; } }catch(e){} return def; }
+
+/* ---------- state ---------- */
+var gallery   = load('gallery',[]);
+var favorites = load('favorites',[]);
+var videos    = load('videos',[]);
+var saved     = load('saved',[]);
+var credits   = load('credits',50);
+var imageCount = 2;
+var currentStyle = 'realistic', demoStyle='cinematic', vidModeVal='t2v', vidMotionVal='medium', vidDurVal='4s', pTarget='image';
+var billing='mo';
+
+/* ---------- data ---------- */
+var STYLES=[
+ {id:'realistic',label:'Realistic',ex:', photorealistic, 8k, detailed'},
+ {id:'anime',label:'Anime',ex:', anime style, vibrant, studio ghibli'},
+ {id:'cinematic',label:'Cinematic',ex:', cinematic lighting, film grain, dramatic'},
+ {id:'3d',label:'3D Render',ex:', 3d render, octane, ray tracing'},
+ {id:'cartoon',label:'Cartoon',ex:', cartoon, flat illustration, bold colors'},
+];
+var PALETTE=['#7c5cfc','#c15cfc','#fc5ca0','#5cf0c8','#fca65c','#5c9dfc'];
+var FEATURES=[
+ {i:'🖼',t:'Text-to-Image',d:'40+ diffusion models, every style, batch generation and instant variations.'},
+ {i:'🎬',t:'Text & Image-to-Video',d:'Animate stills or generate clips from a prompt with motion and duration control.'},
+ {i:'✍️',t:'Prompt Studio',d:'AI prompt enhancer, templates and a library of trending, proven prompts.'},
+ {i:'🪄',t:'One-click Tools',d:'Background remover, upscaler, face swap, avatar and logo generators built in.'},
+ {i:'⚡',t:'Lightning fast',d:'Edge-rendered previews and a credit system that never gets in your way.'},
+ {i:'📲',t:'Publish anywhere',d:'Push straight to Instagram, TikTok and Facebook with one connected account.'},
+];
+var PLANS=[
+ {name:'Free',mo:0,yr:0,sub:'For trying things out',pop:false,cta:'Start free',f:[['50 starter credits',1],['Standard models',1],['Up to 1024px exports',1],['Community gallery',1],['Watermark-free downloads',0],['Commercial license',0]]},
+ {name:'Pro',mo:19,yr:182,sub:'For active creators',pop:true,cta:'Upgrade to Pro',f:[['2,000 credits / mo',1],['All 40+ premium models',1],['4K hi-res exports',1],['Video up to 1080p',1],['Watermark-free downloads',1],['Commercial license',1]]},
+ {name:'Premium',mo:49,yr:470,sub:'For teams & studios',pop:false,cta:'Go Premium',f:[['8,000 credits / mo',1],['Everything in Pro',1],['Video up to 4K',1],['API access + webhooks',1],['Priority GPU queue',1],['Dedicated support',1]]},
+];
+var TESTI=[
+ {n:'Aisha Verma',r:'Brand Designer',q:'AuraGen replaced three tools in my stack. The prompt studio alone is worth the subscription.'},
+ {n:'Marco Silva',r:'Indie Filmmaker',q:'Image-to-video is shockingly good. I storyboard entire scenes before touching a camera.'},
+ {n:'Lena Okafor',r:'Content Creator',q:'I publish straight to Instagram from the dashboard. My output literally tripled this month.'},
+ {n:'Dev Patel',r:'Startup Founder',q:'We generate every ad creative here. The API and credit system fit our workflow perfectly.'},
+ {n:'Yuki Tanaka',r:'Illustrator',q:'The anime models are gorgeous and the upscaler keeps every line crisp at 4K.'},
+ {n:'Sara Lindqvist',r:'Marketing Lead',q:'Affiliate payouts are real money. Onboarding my whole team took five minutes.'},
+];
+var FAQS=[
+ ['Is there a free plan?','Yes — every account starts with 50 credits, no card required. You can generate images, try the tools and explore the studio before upgrading.'],
+ ['How do credits work?','Each generation spends credits based on resolution and model. Images cost ~2 credits, videos ~12. Paid plans refill monthly and credits never expire.'],
+ ['Which AI models do you support?','40+ models spanning photoreal, anime, 3D and cinematic styles, plus dedicated video and upscaling engines. New models are added every month.'],
+ ['Can I use creations commercially?','Pro and Premium plans include a full commercial license. The free plan is for personal and evaluation use.'],
+ ['Do you offer an API?','Yes. Premium unlocks REST API access with keys, webhooks and generous rate limits — ideal for automating creative pipelines.'],
+ ['How do payments work?','We support Stripe globally and Razorpay for India (cards, UPI, netbanking). Upgrade, downgrade or cancel anytime from your billing page.'],
+];
+var TOOLS=[
+ {i:'✂️',t:'Background Remover',d:'Cut any subject out cleanly with one click.',c:'#7c5cfc',badge:'Live'},
+ {i:'🔍',t:'Image Upscaler',d:'Enhance and upscale up to 4× without losing detail.',c:'#5cf0c8',badge:'Pro'},
+ {i:'🔄',t:'Face Swap',d:'Swap faces between photos realistically and safely.',c:'#fc5ca0',badge:'Pro'},
+ {i:'🧑‍🎨',t:'AI Avatar Generator',d:'Turn a selfie into dozens of styled avatars.',c:'#fca65c',badge:'New'},
+ {i:'🏷',t:'AI Logo Generator',d:'Brand-ready logos from a single description.',c:'#c15cfc',badge:'New'},
+ {i:'🖼',t:'Thumbnail Generator',d:'Scroll-stopping YouTube thumbnails in seconds.',c:'#5c9dfc',badge:''},
+];
+var TRENDING=[
+ 'Hyperrealistic portrait of a cyberpunk samurai, neon rain, 85mm, bokeh',
+ 'Cozy isometric coffee shop, warm lighting, 3d render, tilt-shift',
+ 'Majestic phoenix made of liquid gold, dark background, cinematic',
+ 'Minimalist mountain landscape, risograph print, two-tone, grain',
+ 'Astronaut floating in a field of glowing jellyfish, dreamy, volumetric light',
+];
+var TEMPLATES=['Product shot','Portrait','Landscape','Logo','Concept art','Architecture'];
+
+/* ---------- utils ---------- */
+function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function hash(s){var h=0;for(var i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i)|0;}return Math.abs(h);}
+function gradFallback(img){
+  var s=img.alt||img.getAttribute('data-p')||Math.random()+'';
+  var h=hash(s); var c1=PALETTE[h%PALETTE.length], c2=PALETTE[(h>>3)%PALETTE.length];
+  var svg="<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='"+c1+"'/><stop offset='1' stop-color='"+c2+"'/></linearGradient></defs><rect width='400' height='400' fill='#0d0f14'/><rect width='400' height='400' fill='url(%23g)' opacity='0.55'/><circle cx='"+(h%300+50)+"' cy='"+(h%240+80)+"' r='90' fill='#fff' opacity='0.12'/><circle cx='"+(h%200+120)+"' cy='"+(h%300+60)+"' r='60' fill='#fff' opacity='0.08'/></svg>";
+  img.onerror=null; img.src="data:image/svg+xml,"+encodeURIComponent(svg);
+}
+function imgURL(prompt,w,h,seed){
+  var p=new URLSearchParams({width:w,height:h,seed:seed||hash(prompt)%99999,nologo:'true',model:'flux'});
+  return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?'+p;
+}
+function toast(msg,type){
+  type=type||'info'; var t=document.getElementById('toasts');
+  var el=document.createElement('div'); el.className='toast '+type;
+  el.innerHTML='<span class="dotc"></span>'+esc(msg);
+  t.appendChild(el); setTimeout(function(){el.style.opacity='0';el.style.transition='.4s';setTimeout(function(){el.remove();},400);},3200);
+}
+function setCredits(n){credits=Math.max(0,n);store('credits',credits);document.querySelectorAll('#creditTag').forEach(function(e){e.textContent='⚡ '+credits+' credits';});var ct=document.getElementById('dashCredits');if(ct)ct.textContent=credits;}
+
+/* ---------- router ---------- */
+function go(page){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var el=document.getElementById('page-'+page); if(el)el.classList.add('active');
+  document.querySelectorAll('[data-nav]').forEach(function(a){a.classList.toggle('active',a.getAttribute('data-nav')===page);});
+  document.getElementById('navLinks').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(page==='dashboard')dashTab('overview',document.querySelector('#dashNav button'));
+  if(page==='admin')adminTab('overview',document.querySelector('#adminNav button'));
+  if(page==='tools')renderTools();
+}
+
+/* ---------- landing renderers ---------- */
+function renderMarquee(){
+  var seeds=['ethereal forest spirit, glowing','retro sports car, sunset','majestic snow leopard portrait','floating island, waterfalls','neon tokyo alley, rain','golden desert dunes, minimal','astronaut, nebula reflection','crystal cave, bioluminescent','vintage robot, garden','abstract liquid chrome'];
+  var html='';
+  for(var pass=0;pass<2;pass++){seeds.forEach(function(s){
+    var u=imgURL(s,300,210,hash(s)%9999);
+    html+='<div class="mq-img" style="background-image:url(\''+u+'\')" data-p="'+esc(s)+'"></div>';
+  });}
+  document.getElementById('mqTrack').innerHTML=html;
+  // gradient fallback for blocked external images
+  document.querySelectorAll('.mq-img').forEach(function(d){
+    var test=new Image(); test.onerror=function(){var s=d.getAttribute('data-p');var h=hash(s);d.style.backgroundImage='linear-gradient(135deg,'+PALETTE[h%PALETTE.length]+','+PALETTE[(h>>2)%PALETTE.length]+')';};
+    test.src=d.style.backgroundImage.slice(5,-2);
+  });
+}
+function renderSeg(elId,items,activeVal,cb){
+  var el=document.getElementById(elId);
+  el.innerHTML=items.map(function(it){return '<button class="chip'+(it.v===activeVal?' active':'')+'" data-v="'+it.v+'">'+it.l+'</button>';}).join('');
+  el.querySelectorAll('.chip').forEach(function(b){b.onclick=function(){el.querySelectorAll('.chip').forEach(function(x){x.classList.remove('active');});b.classList.add('active');cb(b.getAttribute('data-v'));};});
+}
+function renderFeatures(){document.getElementById('featGrid').innerHTML=FEATURES.map(function(f){return '<div class="feat"><div class="feat-ic">'+f.i+'</div><h3>'+f.t+'</h3><p>'+f.d+'</p></div>';}).join('');}
+function renderPricing(){
+  document.getElementById('priceGrid').innerHTML=PLANS.map(function(p){
+    var price=billing==='mo'?p.mo:Math.round(p.yr/12);
+    var per=p.mo===0?'forever':'/mo';
+    var note=billing==='yr'&&p.yr>0?'billed $'+p.yr+'/yr':'';
+    return '<div class="plan'+(p.pop?' pop':'')+'">'+(p.pop?'<span class="plan-tag">Most popular</span>':'')+
+      '<h3>'+p.name+'</h3><div class="price">$'+price+'<small> '+per+'</small></div><div class="sub">'+p.sub+(note?' · '+note:'')+'</div>'+
+      '<ul>'+p.f.map(function(x){return '<li><span class="ck">'+(x[1]?'✓':'·')+'</span><span'+(x[1]?'':' style="opacity:.5"')+'>'+x[0]+'</span></li>';}).join('')+'</ul>'+
+      '<button class="btn '+(p.pop?'primary':'')+' block" onclick="'+(p.mo===0?"openAuth('register')":"openPay('"+p.name+"',"+price+")")+'">'+p.cta+'</button></div>';
+  }).join('');
+}
+function setBilling(b,btn){billing=b;document.querySelectorAll('.price-toggle button').forEach(function(x){x.classList.remove('active');});btn.classList.add('active');renderPricing();}
+function renderTesti(){document.getElementById('testiGrid').innerHTML=TESTI.map(function(t){return '<div class="tcard"><div class="stars">★★★★★</div><p>“'+t.q+'”</p><div class="tperson"><div class="tav">'+t.n[0]+'</div><div><b>'+t.n+'</b><span>'+t.r+'</span></div></div></div>';}).join('');}
+function renderFAQ(){
+  document.getElementById('faqList').innerHTML=FAQS.map(function(f){return '<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'open\');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?\'\':a.scrollHeight+\'px\'">'+f[0]+'<span class="pl">+</span></div><div class="faq-a"><div>'+f[1]+'</div></div></div>';}).join('');
+}
+
+/* ---------- demo (landing) ---------- */
+function demoGenerate(){
+  var p=document.getElementById('demoPrompt').value.trim(); if(!p)return toast('Write a prompt first','error');
+  var st=STYLES.find(function(s){return s.id===demoStyle;});
+  var stage=document.getElementById('demoStage'); var btn=document.getElementById('demoGen');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Rendering…';
+  stage.innerHTML='<div class="skeleton" style="width:100%"><div class="skel-img" style="aspect-ratio:1"></div></div>';
+  var url=imgURL(p+st.ex,512,512,Math.floor(Math.random()*99999));
+  var img=new Image();img.onload=function(){stage.innerHTML='';var c=buildCard(url,p+st.ex,demoStyle);c.style.maxWidth='320px';stage.appendChild(c);btn.disabled=false;btn.textContent='Generate image';toast('Image generated ✨','success');};
+  img.onerror=function(){stage.innerHTML='';var c=buildCard(url,p+st.ex,demoStyle);stage.appendChild(c);btn.disabled=false;btn.textContent='Generate image';};
+  img.src=url;
+}
+
+/* ---------- image studio ---------- */
+function renderImageControls(){
+  document.getElementById('imgStyles').innerHTML=STYLES.map(function(s){return '<button class="chip'+(s.id===currentStyle?' active':'')+'" onclick="pickStyle(\''+s.id+'\',this)">'+s.label+'</button>';}).join('');
+  var ratios=[['1:1',64,64],['16:9',72,40],['9:16',40,72],['4:5',56,70]];
+  document.getElementById('ratioGrid').innerHTML=ratios.map(function(r,i){return '<div class="ratio'+(i===0?' active':'')+'" data-r="'+r[0]+'" onclick="pickRatio(this)"><div class="box" style="width:'+r[1]/2+'px;height:'+r[2]/2+'px"></div><span>'+r[0]+'</span></div>';}).join('');
+}
+function pickStyle(id,el){currentStyle=id;el.parentElement.querySelectorAll('.chip').forEach(function(x){x.classList.remove('active');});el.classList.add('active');}
+function pickRatio(el){el.parentElement.querySelectorAll('.ratio').forEach(function(x){x.classList.remove('active');});el.classList.add('active');}
+function getRatio(){var a=document.querySelector('#ratioGrid .ratio.active').getAttribute('data-r');return {'1:1':[1024,1024],'16:9':[1280,720],'9:16':[720,1280],'4:5':[896,1120]}[a];}
+function stepCount(d){imageCount=Math.max(1,Math.min(6,imageCount+d));document.getElementById('countVal').textContent=imageCount;document.getElementById('imgGenCount').textContent=imageCount+' image'+(imageCount>1?'s':'')+' · '+(imageCount*2)+'⚡';}
+
+function buildCard(url,prompt,style){
+  var card=document.createElement('div');card.className='img-card';
+  var isFav=favorites.some(function(f){return f.url===url;});
+  card.innerHTML='<img src="'+url+'" alt="'+esc(prompt.slice(0,40))+'" loading="lazy" onerror="gradFallback(this)">'+
+    '<div class="img-card-info"><div class="img-card-prompt">'+esc(prompt)+'</div>'+
+    '<div class="img-card-meta"><span class="img-card-style">'+(STYLES.find(function(s){return s.id===style;})||{label:'Default'}).label+'</span>'+
+    '<div class="img-card-btns"><button class="icon-btn fav'+(isFav?' on':'')+'" title="Favorite">♡</button><button class="icon-btn" title="Download">⬇</button></div></div></div>';
+  card.querySelector('img').onclick=function(){openLbx(url,prompt);};
+  var btns=card.querySelectorAll('.icon-btn');
+  btns[0].onclick=function(){toggleFav(url,prompt,style,btns[0]);};
+  btns[1].onclick=function(){downloadImg(url);};
+  return card;
+}
+function generateImages(){
+  var p=document.getElementById('imgPrompt').value.trim(); if(!p)return toast('Write a prompt first','error');
+  if(credits<imageCount*2)return toast('Not enough credits — upgrade your plan','error');
+  var st=STYLES.find(function(s){return s.id===currentStyle;});
+  var neg=document.getElementById('imgNeg').value.trim();
+  var full=p+st.ex+(neg?' | avoid: '+neg:'');
+  var dims=getRatio();
+  var grid=document.getElementById('imgGrid');var empty=grid.querySelector('.empty');if(empty)empty.remove();
+  var btn=document.getElementById('imgGenBtn');btn.disabled=true;btn.innerHTML='<span class="spin"></span> Generating…';
+  var skels=[];
+  for(var i=0;i<imageCount;i++){var s=document.createElement('div');s.className='skeleton';s.innerHTML='<div class="skel-img"></div><div class="skel-l"></div><div class="skel-l s"></div>';grid.prepend(s);skels.push(s);}
+  var done=0;
+  for(var j=0;j<imageCount;j++){(function(idx){
+    var url=imgURL(full,dims[0],dims[1],Math.floor(Math.random()*999999));
+    var img=new Image();
+    function finish(){var card=buildCard(url,full,currentStyle);skels[idx].replaceWith(card);var entry={url:url,prompt:full,style:currentStyle,ts:Date.now()};gallery.unshift(entry);if(gallery.length>120)gallery=gallery.slice(0,120);store('gallery',gallery);done++;if(done===imageCount){btn.disabled=false;btn.innerHTML='Generate <span id="imgGenCount">'+imageCount+' images · '+(imageCount*2)+'⚡</span>';updateImgCount();setCredits(credits-imageCount*2);toast(imageCount+' image(s) generated!','success');}}
+    img.onload=finish;img.onerror=finish;img.src=url;
+  })(j);}
+}
+function updateImgCount(){var n=document.querySelectorAll('#imgGrid .img-card').length;document.getElementById('imgCount').textContent=n+' image'+(n!==1?'s':'');}
+function clearImages(){if(!document.querySelector('#imgGrid .img-card'))return;if(!confirm('Clear all generated images?'))return;document.getElementById('imgGrid').innerHTML='<div class="empty"><div class="big">🎨</div><h3>Your canvas is empty</h3><p>Write a prompt and click Generate.</p></div>';updateImgCount();}
+function downloadAllImages(){var imgs=document.querySelectorAll('#imgGrid .img-card img');if(!imgs.length)return toast('Nothing to download','error');imgs.forEach(function(im,i){setTimeout(function(){downloadImg(im.src);},i*350);});toast('Downloading '+imgs.length+' image(s)…','info');}
+function downloadImg(url){var a=document.createElement('a');a.href=url;a.download='auragen-'+Date.now()+'.png';a.target='_blank';document.body.appendChild(a);a.click();a.remove();toast('Download started','success');}
+function toggleFav(url,prompt,style,btn){
+  var i=favorites.findIndex(function(f){return f.url===url;});
+  if(i>=0){favorites.splice(i,1);if(btn)btn.classList.remove('on');toast('Removed from favorites','info');}
+  else{favorites.unshift({url:url,prompt:prompt,style:style,ts:Date.now()});if(btn)btn.classList.add('on');toast('Added to favorites ♥','success');}
+  store('favorites',favorites);
+}
+
+/* ---------- lightbox ---------- */
+var lbxCur=null;
+function openLbx(url,prompt){lbxCur={url:url,prompt:prompt};document.getElementById('lbxImg').src=url;document.getElementById('lbxImg').onerror=function(){gradFallback(this);};document.getElementById('lbxPrompt').textContent=prompt;document.getElementById('lbxFav').innerHTML=favorites.some(function(f){return f.url===url;})?'♥ Favorited':'♡ Favorite';document.getElementById('lbx').classList.add('show');}
+function closeLbx(){document.getElementById('lbx').classList.remove('show');}
+function downloadFromLbx(){if(lbxCur)downloadImg(lbxCur.url);}
+function favFromLbx(){if(lbxCur){toggleFav(lbxCur.url,lbxCur.prompt,'realistic');document.getElementById('lbxFav').innerHTML=favorites.some(function(f){return f.url===lbxCur.url;})?'♥ Favorited':'♡ Favorite';}}
+function reuseLbx(){if(lbxCur){document.getElementById('imgPrompt').value=lbxCur.prompt;closeLbx();go('image');toast('Prompt loaded into Image Studio','success');}}
+
+/* ---------- video studio ---------- */
+function renderVideoControls(){
+  renderSeg('vidMode',[{v:'t2v',l:'Text-to-Video'},{v:'i2v',l:'Image-to-Video'}],'t2v',function(v){vidModeVal=v;document.getElementById('vidImgField').style.display=v==='i2v'?'block':'none';});
+  renderSeg('vidMotion',[{v:'subtle',l:'Subtle'},{v:'medium',l:'Medium'},{v:'dynamic',l:'Dynamic'}],'medium',function(v){vidMotionVal=v;});
+  renderSeg('vidDur',[{v:'2s',l:'2s'},{v:'4s',l:'4s'},{v:'6s',l:'6s'},{v:'10s',l:'10s'}],'4s',function(v){vidDurVal=v;});
+  renderSeg('demoMotion',[{v:'subtle',l:'Subtle'},{v:'medium',l:'Medium'},{v:'dynamic',l:'Dynamic'}],'medium',function(){});
+}
+function generateVideo(){
+  var p=document.getElementById('vidPrompt').value.trim(); if(!p)return toast('Describe your scene first','error');
+  if(credits<12)return toast('Not enough credits for video','error');
+  var grid=document.getElementById('vidGrid');var empty=grid.querySelector('.empty');if(empty)empty.remove();
+  var btn=document.getElementById('vidGenBtn');btn.disabled=true;btn.innerHTML='<span class="spin"></span> Rendering video…';
+  var card=document.createElement('div');card.className='vid-card';
+  card.innerHTML='<div class="vid-frame" style="display:grid;place-items:center"><div style="text-align:center"><div class="spin" style="width:30px;height:30px;border-width:3px"></div><p class="muted" style="font-size:12px;margin-top:12px">Synthesizing frames…</p></div></div><div class="vid-tl"></div>';
+  grid.prepend(card);
+  var url=imgURL(p+', cinematic film still, motion blur',640,360,Math.floor(Math.random()*99999));
+  setTimeout(function(){
+    card.innerHTML='<div class="vid-frame"><img src="'+url+'" alt="'+esc(p.slice(0,40))+'" onerror="gradFallback(this)"><div class="vid-play"><div class="pl">▶</div></div></div><div class="vid-tl"></div><div style="padding:13px;display:flex;justify-content:space-between;align-items:center"><div style="min-width:0"><div class="img-card-prompt" style="margin:0">'+esc(p)+'</div><span class="muted" style="font-size:11px">'+vidDurVal+' · '+document.getElementById('vidQuality').value.split(' ')[0]+' · '+vidMotionVal+'</span></div><button class="icon-btn" title="Download MP4" onclick="toast(\'MP4 export started\',\'success\')">⬇</button></div>';
+    card.querySelector('.vid-frame').onclick=function(){openLbx(url,p);};
+    videos.unshift({url:url,prompt:p,ts:Date.now()});store('videos',videos);
+    btn.disabled=false;btn.innerHTML='Generate video · 12⚡';setCredits(credits-12);
+    document.getElementById('vidCount').textContent=document.querySelectorAll('#vidGrid .vid-card').length+' video(s)';
+    toast('Video clip ready 🎬','success');
+  },2600);
+}
+
+/* ---------- prompt studio ---------- */
+function renderPromptControls(){
+  renderSeg('pTargets',[{v:'image',l:'Image'},{v:'video',l:'Video'},{v:'logo',l:'Logo'},{v:'avatar',l:'Avatar'}],'image',function(v){pTarget=v;});
+  document.getElementById('pTemplates').innerHTML=TEMPLATES.map(function(t){return '<button class="chip" onclick="applyTemplate(\''+t+'\')">'+t+'</button>';}).join('');
+  document.getElementById('trendList').innerHTML=TRENDING.map(function(t){return '<div class="list-row"><div style="flex:1;font-size:13px;color:var(--muted2)">'+esc(t)+'</div><button class="icon-btn" onclick="useTrend(\''+esc(t).replace(/'/g,"&#39;")+'\')" title="Use">→</button></div>';}).join('');
+}
+var ENH={image:[', ultra detailed, 8k, sharp focus, professional photography, dramatic lighting, intricate details, masterpiece',', cinematic composition, volumetric lighting, award-winning, trending on artstation'],
+ video:[', smooth camera motion, cinematic 4k, depth of field, color graded, film grain',', dynamic movement, slow motion, atmospheric, hyper-realistic'],
+ logo:[', minimal vector logo, clean lines, flat design, brand identity, scalable, modern',', geometric, balanced negative space, memorable, professional'],
+ avatar:[', stylized portrait, soft studio lighting, expressive, character design, clean background',', detailed face, vibrant, high quality render']};
+function enhanceText(base,target){var add=ENH[target]||ENH.image;return base.replace(/[.,\s]+$/,'')+add[hash(base)%add.length];}
+function enhancePrompt(){var idea=document.getElementById('pIdea').value.trim();if(!idea)return toast('Type an idea first','error');var r=document.getElementById('pResult');r.textContent='Enhancing…';setTimeout(function(){r.textContent=enhanceText(idea,pTarget);toast('Prompt enhanced ✨','success');},500);}
+function enhanceField(id){var f=document.getElementById(id);if(!f.value.trim())return toast('Write something to enhance','error');f.value=enhanceText(f.value.trim(),'image');toast('Prompt enhanced ✨','success');}
+function applyTemplate(t){var map={'Product shot':'a [product] on a marble pedestal, soft studio lighting, commercial photography','Portrait':'close-up portrait of [subject], natural light, shallow depth of field','Landscape':'sweeping [location] landscape at golden hour, epic scale','Logo':'minimalist logo for [brand], abstract mark, two colors','Concept art':'concept art of [scene], matte painting, dramatic atmosphere','Architecture':'modern [building] exterior, clean lines, blue hour, architectural photography'};document.getElementById('pIdea').value=map[t]||t;toast('Template loaded','info');}
+function copyPrompt(){var t=document.getElementById('pResult').textContent;navigator.clipboard&&navigator.clipboard.writeText(t);toast('Copied to clipboard 📋','success');}
+function savePromptCurrent(){var t=document.getElementById('pResult').textContent;if(!t||t.indexOf('appear here')>=0)return toast('Enhance a prompt first','error');saved.unshift({text:t,ts:Date.now()});store('saved',saved);toast('Prompt saved 💾','success');}
+function usePromptInImage(){var t=document.getElementById('pResult').textContent;if(!t||t.indexOf('appear here')>=0)return toast('Enhance a prompt first','error');document.getElementById('imgPrompt').value=t;go('image');toast('Loaded into Image Studio','success');}
+function useTrend(t){document.getElementById('pIdea').value=t;document.getElementById('pResult').textContent=enhanceText(t,'image');toast('Trending prompt loaded','info');}
+
+/* ---------- tools hub ---------- */
+function renderTools(){
+  document.getElementById('toolsGrid').innerHTML=TOOLS.map(function(t){return '<div class="tool" onclick="openTool(\''+esc(t.t)+'\')"><div class="tool-ic" style="background:'+t.c+'22;border:1px solid '+t.c+'55">'+t.i+'</div><h3>'+t.t+(t.badge?' <span class="badge">'+t.badge+'</span>':'')+'</h3><p>'+t.d+'</p></div>';}).join('');
+}
+function openTool(name){if(name==='Background Remover'){toast('Background Remover opens its dedicated workspace','info');}else{toast(name+' — opens in the full app',type='info');}}
+
+/* ---------- dashboard ---------- */
+function dashTab(tab,btn){
+  if(btn){btn.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
+  var b=document.getElementById('dashBody');
+  if(tab==='overview'){
+    var days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];var vals=[40,65,52,80,72,95,60];
+    b.innerHTML=
+    '<div class="dash-grid">'+
+      stat('Total generations','1,284','⚡','+12% this week','up')+
+      stat('Credits remaining','<span id="dashCredits">'+credits+'</span>','💎','Refills in 14 days','')+
+      stat('Favorites','<span>'+favorites.length+'</span>','♥','Across all projects','')+
+      stat('This month','312','📈','+34% vs last','up')+
+    '</div>'+
+    '<div class="dash-cols">'+
+      '<div class="card"><h3>Usage this week <span class="tag purple">Images</span></h3><div class="bars">'+vals.map(function(v,i){return '<div class="bar" style="height:'+v+'%" data-d="'+days[i]+'"></div>';}).join('')+'</div></div>'+
+      '<div class="card"><h3>Credit balance</h3>'+creditRing(credits,50)+'<p class="muted" style="text-align:center;font-size:13px;margin-top:14px">'+credits+' of monthly allowance left</p><button class="btn primary block sm" style="margin-top:14px" onclick="go(\'landing\');document.getElementById(\'pricing\').scrollIntoView()">Get more credits</button></div>'+
+    '</div>'+
+    '<div class="card mt"><h3>Recent projects <a class="link" onclick="go(\'image\')">Open studio →</a></h3>'+recentRows()+'</div>';
+    requestAnimationFrame(function(){document.querySelectorAll('.bar').forEach(function(bar){var h=bar.style.height;bar.style.height='0';requestAnimationFrame(function(){bar.style.height=h;});});});
+  }
+  else if(tab==='projects'){b.innerHTML='<div class="card"><h3>All projects ('+gallery.length+')</h3>'+(gallery.length?'<div class="grid">'+gallery.slice(0,12).map(function(g){return cardMini(g);}).join('')+'</div>':emptyBox('🗂','No projects yet','Generate something in the Image Studio.'))+'</div>';bindMini();}
+  else if(tab==='saved'){b.innerHTML='<div class="card"><h3>Saved prompts ('+saved.length+')</h3>'+(saved.length?saved.map(function(s){return '<div class="list-row"><div style="flex:1;font-size:13px;color:var(--muted2)">'+esc(s.text)+'</div><button class="icon-btn" onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+esc(s.text).replace(/'/g,"&#39;")+'\');toast(\'Copied\',\'success\')">📋</button></div>';}).join(''):emptyBox('✍️','No saved prompts','Save prompts from the Prompt Studio.'))+'</div>';}
+  else if(tab==='favorites'){b.innerHTML='<div class="card"><h3>Favorite creations ('+favorites.length+')</h3>'+(favorites.length?'<div class="grid">'+favorites.map(function(g){return cardMini(g);}).join('')+'</div>':emptyBox('♥','No favorites yet','Tap the heart on any image.'))+'</div>';bindMini();}
+  else if(tab==='affiliate'){
+    var link='https://auragen.ai/?ref=ranjith';
+    b.innerHTML='<div class="dash-grid">'+stat('Referrals','38','👥','+5 this month','up')+stat('Conversions','14','✅','37% rate','')+stat('Total earned','$428','💰','Lifetime','')+stat('Available','$92','🏦','Ready to withdraw','')+'</div>'+
+    '<div class="dash-cols"><div class="card"><h3>Your referral link</h3><div class="refbox"><span style="flex:1">'+link+'</span></div><div class="row mt"><button class="btn sm" onclick="navigator.clipboard&&navigator.clipboard.writeText(\''+link+'\');toast(\'Referral link copied\',\'success\')">📋 Copy link</button><button class="btn sm" onclick="toast(\'Shareable assets opened\',\'info\')">🎁 Get banners</button></div><p class="muted mt" style="font-size:13px">Earn <b style="color:var(--teal)">30% recurring commission</b> on every paid referral, for the lifetime of their subscription.</p></div>'+
+    '<div class="card"><h3>Withdraw earnings</h3><div class="field"><label>Amount (USD)</label><input type="text" value="92.00"></div><div class="field"><label>Method</label><select><option>PayPal</option><option>Bank transfer (UPI)</option><option>Crypto (USDT)</option></select></div><button class="btn primary block" onclick="toast(\'Withdrawal request submitted\',\'success\')">Request withdrawal</button></div></div>'+
+    '<div class="card mt"><h3>Commission history</h3><table class="tbl"><thead><tr><th>Date</th><th>Referral</th><th>Plan</th><th>Commission</th><th>Status</th></tr></thead><tbody>'+
+    [['Jun 18','m***@gmail.com','Pro','$5.70','Paid','green'],['Jun 11','d***@outlook.com','Premium','$14.70','Paid','green'],['Jun 04','s***@yahoo.com','Pro','$5.70','Pending','gold'],['May 28','a***@gmail.com','Pro','$5.70','Paid','green']].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td><b>'+r[3]+'</b></td><td><span class="tag '+r[5]+'">'+r[4]+'</span></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  else if(tab==='profile'){
+    b.innerHTML='<div class="dash-cols"><div class="card"><h3>Profile</h3><div class="row mb" style="align-items:center"><div class="tav" style="width:64px;height:64px;font-size:24px">R</div><div><b style="font-size:17px">Ranjith Kumar</b><div class="muted" style="font-size:13px">ranjith@example.com</div><span class="tag purple" style="margin-top:6px;display:inline-block">Free plan</span></div></div>'+
+    '<div class="field"><label>Display name</label><input type="text" value="Ranjith Kumar"></div><div class="field"><label>Email</label><input type="email" value="ranjith@example.com"></div><div class="field"><label>Language</label><select><option>English</option><option>हिन्दी (Hindi)</option><option>Español</option><option>Français</option><option>日本語</option><option>Deutsch</option></select></div><button class="btn primary" onclick="toast(\'Profile updated\',\'success\')">Save changes</button></div>'+
+    '<div class="card"><h3>Connected accounts</h3>'+
+    [['Instagram','📷','Connected','green'],['Facebook','👍','Connect','purple'],['TikTok','🎵','Connect','purple']].map(function(s){return '<div class="list-row"><div style="font-size:22px">'+s[1]+'</div><div class="meta"><b>'+s[0]+'</b><span>Publish creations directly</span></div><button class="btn sm" onclick="toast(\''+s[0]+' '+(s[2]==='Connected'?'disconnected':'connected')+'\',\'info\')">'+s[2]+'</button></div>';}).join('')+
+    '<h3 style="margin-top:24px">Security</h3><button class="btn block mb" onclick="toast(\'Password reset email sent\',\'info\')">Change password</button><button class="btn block" onclick="toast(\'2FA setup opened\',\'info\')">Enable two-factor auth</button></div></div>';
+  }
+  else if(tab==='billing'){
+    b.innerHTML='<div class="card mb"><h3>Current plan</h3><div class="between"><div><b style="font-family:Space Grotesk;font-size:22px">Free</b><div class="muted" style="font-size:13px">50 credits / month · renews Jul 4</div></div><button class="btn primary" onclick="go(\'landing\');document.getElementById(\'pricing\').scrollIntoView()">Upgrade</button></div><div class="progress mt"><i style="width:'+(credits/50*100)+'%"></i></div><span class="muted" style="font-size:12px">'+credits+' / 50 credits used this cycle</span></div>'+
+    '<div class="card"><h3>Billing history</h3><table class="tbl"><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Invoice</th></tr></thead><tbody>'+
+    [['Jun 04','Free plan renewal','$0.00'],['May 04','Free plan renewal','$0.00']].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td><a class="link">Download</a></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+}
+function stat(lab,val,ic,delta,dir){return '<div class="stat"><div class="lab">'+ic+' '+lab+'</div><div class="val">'+val+'</div>'+(delta?'<div class="delta '+dir+'">'+(dir==='up'?'▲ ':dir==='down'?'▼ ':'')+delta+'</div>':'')+'</div>';}
+function creditRing(val,max){var pct=Math.min(1,val/max),c=2*Math.PI*52,off=c*(1-pct);return '<svg class="credit-ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#1a1e28" stroke-width="12"/><circle cx="60" cy="60" r="52" fill="none" stroke="url(#rg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+off+'" transform="rotate(-90 60 60)"/><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cfc"/><stop offset="1" stop-color="#c15cfc"/></linearGradient></defs><text x="60" y="56" text-anchor="middle" fill="#fff" font-size="28" font-family="Space Grotesk" font-weight="700">'+val+'</text><text x="60" y="76" text-anchor="middle" fill="#6b7494" font-size="11">credits</text></svg>';}
+function recentRows(){var items=gallery.slice(0,5);if(!items.length)return emptyBox('🗂','No recent projects','Your generations will show up here.');return items.map(function(g){return '<div class="list-row"><div class="list-thumb" style="background-image:url(\''+g.url+'\')"></div><div class="meta"><b>'+esc(g.prompt.slice(0,46))+'</b><span>'+timeAgo(g.ts)+' · '+(STYLES.find(function(s){return s.id===g.style;})||{label:'Image'}).label+'</span></div><span class="tag green">Done</span></div>';}).join('');}
+function cardMini(g){return '<div class="img-card"><img src="'+g.url+'" alt="'+esc(g.prompt.slice(0,30))+'" loading="lazy" data-url="'+g.url+'" data-p="'+esc(g.prompt)+'" onerror="gradFallback(this)"><div class="img-card-info"><div class="img-card-prompt">'+esc(g.prompt)+'</div></div></div>';}
+function bindMini(){document.querySelectorAll('#dashBody .img-card img').forEach(function(im){im.onclick=function(){openLbx(im.getAttribute('data-url'),im.getAttribute('data-p'));};});}
+function emptyBox(ic,t,p){return '<div class="empty"><div class="big">'+ic+'</div><h3>'+t+'</h3><p>'+p+'</p></div>';}
+function timeAgo(ts){var d=Date.now()-ts;var m=Math.floor(d/60000);if(m<1)return'just now';if(m<60)return m+'m ago';var h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago';}
+
+/* ---------- admin ---------- */
+function adminTab(tab,btn){
+  if(btn){btn.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
+  var b=document.getElementById('adminBody');
+  if(tab==='overview'){
+    var months=['Jan','Feb','Mar','Apr','May','Jun'];var rev=[42,55,61,73,88,96];
+    b.innerHTML='<div class="dash-grid">'+stat('MRR','$48,920','💰','+18% MoM','up')+stat('Active users','12,847','👥','+642 this week','up')+stat('Paid conversion','6.4%','📊','+0.7pt','up')+stat('Churn','2.1%','📉','-0.3pt','down')+'</div>'+
+    '<div class="dash-cols"><div class="card"><h3>Revenue (last 6 months) <span class="tag green">USD</span></h3><div class="bars">'+rev.map(function(v,i){return '<div class="bar" style="height:'+v+'%" data-d="'+months[i]+'"></div>';}).join('')+'</div></div>'+
+    '<div class="card"><h3>Plan distribution</h3>'+[['Free',68,'#1a1e28'],['Pro',24,'#7c5cfc'],['Premium',8,'#c15cfc']].map(function(p){return '<div style="margin-bottom:16px"><div class="between" style="font-size:13px;margin-bottom:6px"><span>'+p[0]+'</span><b>'+p[1]+'%</b></div><div class="progress"><i style="width:'+p[1]+'%;background:'+p[2]+'"></i></div></div>';}).join('')+'</div></div>'+
+    '<div class="card mt"><h3>Live activity</h3>'+[['New Premium subscription','m***@gmail.com','+$49','2m ago','green'],['Image generation spike','API · client #4471','—','8m ago','purple'],['Refund processed','d***@outlook.com','-$19','21m ago','red'],['New signup via affiliate','ref=ranjith','—','34m ago','gold']].map(function(r){return '<div class="list-row"><div class="meta"><b>'+r[0]+'</b><span>'+r[1]+' · '+r[3]+'</span></div><span class="tag '+r[4]+'">'+r[2]+'</span></div>';}).join('')+'</div>';
+    requestAnimationFrame(function(){document.querySelectorAll('#adminBody .bar').forEach(function(bar){var h=bar.style.height;bar.style.height='0';requestAnimationFrame(function(){bar.style.height=h;});});});
+  }
+  else if(tab==='users'){
+    var users=[['Ranjith Kumar','ranjith@example.com','Free','1,284','Active','green'],['Aisha Verma','aisha@studio.co','Pro','8,902','Active','green'],['Marco Silva','marco@films.io','Premium','21,455','Active','green'],['Lena Okafor','lena@create.com','Pro','5,610','Active','green'],['Dev Patel','dev@startup.in','Premium','18,200','Suspended','red'],['Yuki Tanaka','yuki@art.jp','Free','340','Active','green']];
+    b.innerHTML='<div class="card"><h3>Users ('+users.length+' of 12,847) <input type="text" placeholder="Search users…" style="width:220px"></h3><table class="tbl"><thead><tr><th>User</th><th>Plan</th><th>Generations</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+
+    users.map(function(u){return '<tr><td><div class="uav"><div class="av">'+u[0][0]+'</div><div><b style="font-size:13px">'+u[0]+'</b><div class="muted" style="font-size:12px">'+u[1]+'</div></div></div></td><td><span class="tag '+(u[2]==='Free'?'purple':u[2]==='Pro'?'gold':'green')+'">'+u[2]+'</span></td><td>'+u[3]+'</td><td><span class="tag '+u[5]+'">'+u[4]+'</span></td><td><button class="icon-btn" onclick="toast(\'Editing '+u[0]+'\',\'info\')">✎</button> <button class="icon-btn" onclick="toast(\''+u[0]+' '+(u[4]==='Suspended'?'reactivated':'suspended')+'\',\'info\')">⊘</button></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  else if(tab==='subs'){
+    b.innerHTML='<div class="dash-grid">'+stat('Active subs','3,210','💳','','')+stat('Trials','428','🎟','ending soon','')+stat('Past due','37','⚠️','needs action','')+stat('LTV','$284','📈','avg','')+'</div>'+
+    '<div class="card"><h3>Subscriptions</h3><table class="tbl"><thead><tr><th>Customer</th><th>Plan</th><th>Gateway</th><th>Next billing</th><th>MRR</th><th>Status</th></tr></thead><tbody>'+
+    [['aisha@studio.co','Pro · Yearly','Stripe','Mar 4, 2027','$15.20','Active','green'],['marco@films.io','Premium','Stripe','Jul 4','$49.00','Active','green'],['dev@startup.in','Premium','Razorpay','Jul 1','$49.00','Past due','red'],['lena@create.com','Pro','Razorpay','Jul 9','$19.00','Active','green']].map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td><b>'+r[4]+'</b></td><td><span class="tag '+r[6]+'">'+r[5]+'</span></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  else if(tab==='models'){
+    b.innerHTML='<div class="card"><h3>AI Models <button class="btn sm primary" onclick="toast(\'Add model dialog\',\'info\')">+ Add model</button></h3><table class="tbl"><thead><tr><th>Model</th><th>Type</th><th>Cost</th><th>Usage (7d)</th><th>Status</th></tr></thead><tbody>'+
+    [['Aura-Flux','Image','2 cr','482k','Enabled','green'],['Aura-Realism','Image','3 cr','310k','Enabled','green'],['Aura-Anime','Image','2 cr','198k','Enabled','green'],['Aura-Video','Video','12 cr','44k','Enabled','green'],['Aura-Upscale','Tool','4 cr','88k','Enabled','green'],['Aura-Experimental','Image','5 cr','2k','Beta','gold']].map(function(r){return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td><span class="tag '+r[5]+'">'+r[4]+'</span></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  else if(tab==='moderation'){
+    b.innerHTML='<div class="card"><h3>Content moderation queue <span class="tag gold">3 flagged</span></h3>'+
+    [['Prompt flagged: policy keywords','user #8821','Review','gold'],['Auto-blocked NSFW generation','user #4410','Blocked','red'],['Reported by community','image #99201','Review','gold']].map(function(r){return '<div class="list-row"><div class="meta"><b>'+r[0]+'</b><span>'+r[1]+'</span></div><div class="row"><button class="btn sm" onclick="toast(\'Approved\',\'success\')">Approve</button><button class="btn sm danger" onclick="toast(\'Removed\',\'info\')">Remove</button></div></div>';}).join('')+
+    '<p class="muted mt" style="font-size:13px">Automated safety filters block CSAM, explicit and violent content at generation time. Flagged items above require human review.</p></div>';
+  }
+  else if(tab==='tickets'){
+    b.innerHTML='<div class="card"><h3>Support tickets</h3><table class="tbl"><thead><tr><th>Subject</th><th>User</th><th>Priority</th><th>Status</th></tr></thead><tbody>'+
+    [['Video export stuck at 90%','marco@films.io','High','Open','red'],['How do credits roll over?','lena@create.com','Low','Open','gold'],['Razorpay payment failed','dev@startup.in','High','In progress','purple'],['Feature request: SDXL','aisha@studio.co','Low','Closed','green']].map(function(r){return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td><span class="tag '+r[4]+'">'+r[3]+'</span></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  else if(tab==='coupons'){
+    b.innerHTML='<div class="card mb"><h3>Create coupon</h3><div class="row"><div class="field" style="flex:1"><label>Code</label><input type="text" placeholder="AURA20"></div><div class="field" style="flex:1"><label>Discount %</label><input type="text" placeholder="20"></div><div class="field" style="flex:1"><label>Max uses</label><input type="text" placeholder="500"></div></div><button class="btn primary" onclick="toast(\'Coupon created\',\'success\')">Create coupon</button></div>'+
+    '<div class="card"><h3>Active coupons</h3><table class="tbl"><thead><tr><th>Code</th><th>Discount</th><th>Used</th><th>Status</th></tr></thead><tbody>'+
+    [['LAUNCH50','50%','312 / 1000','Active','green'],['AURA20','20%','847 / ∞','Active','green'],['CREATOR','30%','120 / 200','Active','green'],['BLACKFRI','60%','500 / 500','Expired','red']].map(function(r){return '<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td><span class="tag '+r[4]+'">'+r[3]+'</span></td></tr>';}).join('')+'</tbody></table></div>';
+  }
+  else if(tab==='settings'){
+    b.innerHTML='<div class="dash-cols"><div class="card"><h3>Website settings</h3><div class="field"><label>Site name</label><input type="text" value="AuraGen AI"></div><div class="field"><label>Support email</label><input type="email" value="support@auragen.ai"></div><div class="field"><label>Default free credits</label><input type="text" value="50"></div><label class="switch mb"><div><b style="font-size:13px;color:var(--text)">Maintenance mode</b><small>Take the site offline for updates</small></div><div class="tog" onclick="this.classList.toggle(\'on\')"></div></label><label class="switch"><div><b style="font-size:13px;color:var(--text)">New signups</b><small>Allow account registration</small></div><div class="tog on" onclick="this.classList.toggle(\'on\')"></div></label><button class="btn primary block mt" onclick="toast(\'Settings saved\',\'success\')">Save settings</button></div>'+
+    '<div class="card"><h3>API keys & integrations</h3>'+[['OpenAI','sk-•••••••••3a9f','green'],['Gemini','AIza••••••••7c2','green'],['Replicate','r8_•••••••••11d','green'],['Stripe','sk_live_••••88','green'],['Razorpay','rzp_live_••••f2','green'],['Cloudinary','••••••••cloud','green']].map(function(k){return '<div class="list-row"><div class="meta"><b>'+k[0]+'</b><span style="font-family:monospace">'+k[1]+'</span></div><span class="tag '+k[2]+'">Connected</span></div>';}).join('')+'</div></div>';
+  }
+}
+
+/* ---------- auth ---------- */
+function openAuth(mode){document.getElementById('authOverlay').classList.add('show');authMode(mode,document.querySelector('#authTabs button:'+(mode==='register'?'last-child':'first-child')));}
+function authMode(mode,btn){
+  if(btn&&btn.parentElement.classList.contains('auth-tabs')){btn.parentElement.querySelectorAll('button').forEach(function(x){x.classList.remove('active');});btn.classList.add('active');}
+  var name=document.getElementById('nameField'),extra=document.getElementById('loginExtra'),sub=document.getElementById('authSubmit'),title=document.getElementById('authTitle'),subt=document.getElementById('authSub'),tabs=document.getElementById('authTabs');
+  tabs.style.display=mode==='forgot'?'none':'flex';
+  if(mode==='login'){name.style.display='none';extra.style.display='flex';sub.textContent='Log in';title.textContent='Welcome back';subt.textContent='Log in to continue creating';}
+  else if(mode==='register'){name.style.display='block';extra.style.display='none';sub.textContent='Create account';title.textContent='Create your account';subt.textContent='Get 50 free credits — no card required';}
+  else if(mode==='forgot'){name.style.display='none';extra.style.display='none';sub.textContent='Send reset link';title.textContent='Reset password';subt.textContent='We will email you a reset link';}
+}
+function mockAuth(provider){closeOverlay('authOverlay');toast(provider==='Google'?'Signed in with Google ✓':'Signed in ✓','success');setTimeout(function(){go('dashboard');},400);}
+
+/* ---------- pay ---------- */
+var payBase=19;
+function openPay(plan,amount){payBase=amount;document.getElementById('payPlanName').textContent=plan+' plan';document.getElementById('payAmount').textContent='$'+amount;document.getElementById('payOverlay').classList.add('show');}
+function selChip(el){el.parentElement.querySelectorAll('.chip').forEach(function(x){x.classList.remove('active');});el.classList.add('active');}
+function applyCoupon(){var c=document.getElementById('couponIn').value.trim().toUpperCase();var map={'AURA20':.2,'LAUNCH50':.5,'CREATOR':.3};if(map[c]){var na=Math.round(payBase*(1-map[c]));document.getElementById('payAmount').textContent='$'+na;toast(c+' applied — '+(map[c]*100)+'% off!','success');}else toast('Invalid coupon code','error');}
+function mockPay(){closeOverlay('payOverlay');toast('Payment successful — welcome to '+document.getElementById('payPlanName').textContent+'! 🎉','success');setCredits(2000);setTimeout(function(){go('dashboard');},500);}
+
+/* ---------- chatbot ---------- */
+var chatOpen=false;
+function toggleChat(){chatOpen=!chatOpen;document.getElementById('chatWin').classList.toggle('show',chatOpen);if(chatOpen&&!document.getElementById('chatBody').children.length)initChat();}
+function openChat(){if(!chatOpen)toggleChat();}
+function initChat(){
+  addMsg('bot','Hi! I\'m Aura, your creative assistant. Ask me about generating images, plans, or how AuraGen works. ✨');
+  document.getElementById('chatSuggest').innerHTML=['How do credits work?','Best prompt for portraits?','What can the video tool do?'].map(function(q){return '<button onclick="sendSuggest(\''+q+'\')">'+q+'</button>';}).join('');
+}
+function addMsg(who,text){var b=document.getElementById('chatBody');var m=document.createElement('div');m.className='msg '+who;m.textContent=text;b.appendChild(m);b.scrollTop=b.scrollHeight;}
+function botReply(q){
+  q=q.toLowerCase();var r;
+  if(q.indexOf('credit')>=0)r='Credits power every generation — images cost ~2 and videos ~12. Free accounts get 50; Pro refills 2,000/month and Premium 8,000. They never expire on paid plans!';
+  else if(q.indexOf('portrait')>=0||q.indexOf('prompt')>=0)r='For portraits try: "close-up portrait, 85mm lens, soft window light, shallow depth of field, sharp eyes, photorealistic". Use Prompt Studio to enhance it automatically!';
+  else if(q.indexOf('video')>=0)r='The Video Studio does text-to-video and image-to-video with motion intensity, duration (2–10s) and up to 4K on Premium. You can export MP4 directly.';
+  else if(q.indexOf('plan')>=0||q.indexOf('price')>=0||q.indexOf('upgrade')>=0)r='We have Free, Pro ($19/mo) and Premium ($49/mo). Pro unlocks all 40+ models, 4K exports and commercial use. Want me to open pricing?';
+  else if(q.indexOf('refund')>=0||q.indexOf('cancel')>=0)r='You can cancel anytime from Dashboard → Billing. Cancellations take effect at the end of your cycle and you keep access until then.';
+  else if(q.indexOf('hi')>=0||q.indexOf('hello')>=0)r='Hey there! 👋 Ready to create something? Try the Image Studio, or ask me anything.';
+  else r='Great question! AuraGen handles image & video generation, prompt enhancement, and a full toolkit (upscaler, background remover, avatars and more). What would you like to try first?';
+  setTimeout(function(){addMsg('bot',r);},500);
+}
+function sendChat(){var inp=document.getElementById('chatIn');var v=inp.value.trim();if(!v)return;addMsg('user',v);inp.value='';botReply(v);}
+function sendSuggest(q){addMsg('user',q);botReply(q);}
+
+/* ---------- overlays ---------- */
+function closeOverlay(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('show');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelectorAll('.overlay.show').forEach(function(o){o.classList.remove('show');});closeLbx();}});
+
+/* ---------- init ---------- */
+function init(){
+  renderMarquee();
+  renderSeg('demoStyles',STYLES.map(function(s){return{v:s.id,l:s.label};}),'cinematic',function(v){demoStyle=v;});
+  renderFeatures();renderPricing();renderTesti();renderFAQ();
+  renderImageControls();renderVideoControls();renderPromptControls();renderTools();
+  setCredits(credits);
+  // restore galleries
+  if(gallery.length){var g=document.getElementById('imgGrid');g.innerHTML='';gallery.slice(0,12).forEach(function(it){g.appendChild(buildCard(it.url,it.prompt,it.style));});updateImgCount();}
+}
+init();
+</script>
+</body>
+</html>
